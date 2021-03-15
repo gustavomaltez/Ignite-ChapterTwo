@@ -42,7 +42,7 @@ export const GlobalStyle = createGlobalStyle`
         font-weight: 600;
     }
 
-    button: {
+    button {
         cursor: pointer;
     }
 
