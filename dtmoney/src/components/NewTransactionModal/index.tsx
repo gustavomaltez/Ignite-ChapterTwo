@@ -1,5 +1,6 @@
 import Modal from 'react-modal';
 import { Container } from './styles';
+import closeImage from '../../assets/close.svg';
 
 interface newTransactionModalProps {
     isOpen: boolean;
@@ -14,8 +15,14 @@ export function NewTransactionModal({ isOpen, onRequestClose }: newTransactionMo
             onRequestClose={onRequestClose}
             overlayClassName="react-modal-overlay"
             className="react-modal-content"
-            >
+        >
+            <button
+                onClick={onRequestClose}
+                className="react-modal-close">
+                <img src={closeImage} alt="Fechar modal" />
+            </button>
             <Container>
+
                 <h2>Cadastrar transação</h2>
 
                 <input type="text" placeholder="Título" />
