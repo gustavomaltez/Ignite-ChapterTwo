@@ -5,6 +5,7 @@ import outcomeImage from '../../assets/outcome.svg';
 import totalImage from '../../assets/total.svg';
 
 export function Summary() {
+    
     return (
         <Container>
             <div>
