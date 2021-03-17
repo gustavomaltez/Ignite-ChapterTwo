@@ -1,4 +1,6 @@
 import { useTransactions } from '../../hooks/useTransactions';
+import { formatCurrencyToBRL } from '../../utils/formatCurrencyToBRL';
+import { formatDateToPTBR } from '../../utils/formatDateToPTBR';
 import { Container } from "./styles";
 
 export function TransactionsTable() {
@@ -21,12 +23,9 @@ export function TransactionsTable() {
                     {transactions.map(transaction => (
                         <tr key={transaction.id}>
                             <td>{transaction.title}</td>
-                            <td className={transaction.type}>{new Intl.NumberFormat('pt-BR', {
-                                style: 'currency',
-                                currency: 'BRL'
-                            }).format(transaction.amount)}</td>
+                            <td className={transaction.type}>{formatCurrencyToBRL(transaction.amount)}</td>
                             <td>{transaction.category}</td>
-                            <td>{new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.createdAt))}</td>
+                            <td>{formatDateToPTBR(new Date(transaction.createdAt))}</td>
                         </tr>
                     ))}
 
