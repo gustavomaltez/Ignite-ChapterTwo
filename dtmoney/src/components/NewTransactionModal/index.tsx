@@ -3,30 +3,37 @@ import { Container, RadioBox, TransactionTypeContainer } from './styles';
 import closeImage from '../../assets/close.svg';
 import incomeImage from '../../assets/income.svg';
 import outcomeImage from '../../assets/outcome.svg';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { api } from '../../services/api';
+import { TransactionsContext } from '../../TransactionsContext';
 interface newTransactionModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
 }
 
 export function NewTransactionModal({ isOpen, onRequestClose }: newTransactionModalProps) {
+    const { createTransaction } = useContext(TransactionsContext);
+
     const [type, setType] = useState('deposit');
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('');
-    const [value, setValue] = useState(0);
+    const [amount, setAmount] = useState(0);
 
-    function handleCreateNewTransaction(event: React.FormEvent) {
+    async function handleCreateNewTransaction(event: React.FormEvent) {
         event.preventDefault();
 
-        const data = {
-            type,
-            title,
-            category,
-            value
-        };
+        await createTransaction({
+            amount, 
+            category, 
+            title, 
+            type
+        })
 
-        api.post('/transactions', data);
+        setType('deposity');
+        setTitle('');
+        setCategory('');
+        setAmount(0);
+        onRequestClose();
     }
 
     return (
@@ -54,8 +61,8 @@ export function NewTransactionModal({ isOpen, onRequestClose }: newTransactionMo
                 <input
                     type="number"
                     placeholder="Valor"
-                    value={value}
-                    onChange={event => setValue(Number(event.target.value))}
+                    value={amount}
+                    onChange={event => setAmount(Number(event.target.value))}
                 />
 
                 <TransactionTypeContainer>
