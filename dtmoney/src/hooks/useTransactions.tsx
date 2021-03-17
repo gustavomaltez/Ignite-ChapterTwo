@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
-import { api } from './services/api';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { api } from '../services/api';
 
 
 interface TransactionProviderProps {
@@ -17,12 +17,12 @@ interface Transaction {
 
 type TransactionInput = Omit<Transaction, 'id' | 'createdAt'>;
 
-interface TransactionContextData{
+interface TransactionContextData {
     transactions: Transaction[];
     createTransaction: (transaction: TransactionInput) => Promise<void>;
 }
 
-export const TransactionsContext = createContext<TransactionContextData>({} as TransactionContextData);
+const TransactionsContext = createContext<TransactionContextData>({} as TransactionContextData);
 
 export function TransactionsProvider({ children }: TransactionProviderProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -32,16 +32,27 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
             .then(response => setTransactions(response.data.transactions));
     }, [])
 
-    async function createTransaction(transactionInput: TransactionInput){
-        const response = await api.post('/transactions', {...transactionInput, createdAt: new Date()});
+    async function createTransaction(transactionInput: TransactionInput) {
+        const response = await api.post('/transactions', { ...transactionInput, createdAt: new Date() });
         const { transaction } = response.data;
 
         setTransactions(oldState => [...oldState, transaction]);
     }
 
     return (
-        <TransactionsContext.Provider value={{transactions, createTransaction}}>
+        <TransactionsContext.Provider value={{ transactions, createTransaction }}>
             {children}
         </TransactionsContext.Provider>
     );
+}
+
+export function useTransactions() {
+
+    const context = useContext(TransactionsContext);
+
+    if (!context) {
+        throw new Error('useTransactions must be used within a TransactionsProvider');
+    }
+
+    return context;
 }
